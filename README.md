@@ -32,14 +32,6 @@ The final score is a weighted average. Higher means lower risk. Stage, program c
 
 The lookup runs as a Netlify function in `netlify/functions/lookup.js`. It pulls filing data from SEC EDGAR and a delayed price from Stooq.
 
-To use it:
-
-1. Push this folder to a GitHub repo
-2. Import the repo in Netlify
-3. Add an environment variable named `SEC_USER_AGENT` with your name and email, for example `Runwise yourname you@email.com`. The SEC requires this
-4. Deploy
-
-Without the function, the site still works. You just type company numbers in by hand.
 
 ## Limits
 
