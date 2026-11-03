@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Runwise biotech risk research: compare cash runway, pipeline maturity, and industry outlook.">
+<title>Runwise | Biotech Risk Research</title>
+<style>
+:root{
+  color-scheme:light;
+  --bg:#f6f8fb;--surface:#fff;--panel:#eef3f8;--line:#dfe7f2;
+  --text:#111827;--muted:#5f6f85;--accent:#5c7cfa;
+  --chart1:#2a3b5d;--chart2:#6e86d6;--chart3:#b4bfd8;
+  --shadow:0 14px 36px rgba(17,24,39,.08);--radius:18px
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#0d1320;--surface:#121b2a;--panel:#172334;--line:#243248;
+  --text:#edf3ff;--muted:#a4b2c8;--accent:#7ea0ff;
+  --chart1:#dfe9ff;--chart2:#7ea0ff;--chart3:#60779e;
+  --shadow:0 18px 44px rgba(0,0,0,.38)
+}
+@media(prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#0d1320;--surface:#121b2a;--panel:#172334;--line:#243248;
+    --text:#edf3ff;--muted:#a4b2c8;--accent:#7ea0ff;
+    --chart1:#dfe9ff;--chart2:#7ea0ff;--chart3:#60779e;
+    --shadow:0 18px 44px rgba(0,0,0,.38)
+  }
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif}
+a{color:inherit}
+.topbar{
+  position:sticky;top:0;z-index:10;
+  backdrop-filter:blur(16px);
+  background:color-mix(in srgb,var(--bg) 88%,transparent);
+  border-bottom:1px solid var(--line)
+}
+.topbar-inner{
+  max-width:1100px;margin:auto;padding:12px 18px;
+  display:flex;align-items:center;justify-content:space-between;gap:18px
+}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:.12em;font-size:.8rem;white-space:nowrap}
+.brand-mark{width:10px;height:10px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 6px color-mix(in srgb,var(--accent) 15%,transparent)}
+.nav{display:flex;align-items:center;gap:16px;overflow-x:auto;white-space:nowrap}
+.nav a{color:var(--muted);font-size:.84rem;text-decoration:none}
+.nav a:hover{color:var(--text)}
+button,input,select{font:inherit}
+button{cursor:pointer}
+.theme-toggle,.button{
+  border:1px solid var(--line);border-radius:999px;padding:8px 13px;
+  background:var(--surface);color:var(--text);font-size:.85rem
+}
+.button.primary{background:var(--chart1);color:var(--bg);border-color:transparent}
+.button:hover,.theme-toggle:hover{filter:brightness(.96)}
+main{max-width:1100px;margin:auto;padding:22px 18px 76px}
+section{padding-top:56px}
+.hero{padding-top:24px}
+.hero-grid{display:grid;grid-template-columns:1.35fr .85fr;gap:22px;align-items:stretch}
+.hero-copy{padding:26px 8px 10px 0}
+.eyebrow,.k{font-size:.73rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+h1{font-size:clamp(2.5rem,5vw,4.2rem);line-height:1.04;letter-spacing:-.05em;margin:0 0 16px}
+h2{font-size:clamp(1.7rem,3vw,2.4rem);line-height:1.15;letter-spacing:-.035em;margin:0 0 10px}
+h3{font-size:1.08rem;margin:0 0 9px}
+p{margin:0 0 12px}
+.lead{max-width:700px;color:var(--muted);font-size:1.08rem}
+.muted{color:var(--muted)}
+.card,.hero-card{
+  background:var(--surface);border:1px solid var(--line);
+  border-radius:var(--radius);box-shadow:var(--shadow);padding:18px
+}
+.hero-card{background:linear-gradient(180deg,var(--surface),var(--panel))}
+.notice{margin-top:20px;border-left:3px solid var(--accent);background:var(--panel);border-radius:10px;padding:13px 15px;font-size:.91rem}
+.kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:16px}
+.kpi{padding:12px;border:1px solid var(--line);border-radius:14px;background:var(--surface)}
+.kpi-label{font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.kpi-value{font-size:1.55rem;font-weight:800;line-height:1.15;margin-top:7px}
+.kpi-sub{font-size:.78rem;color:var(--muted);margin-top:6px}
+.section-head{margin-bottom:18px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+ul{margin:8px 0 0;padding-left:20px}
+li{margin-bottom:7px}
+.card p:last-child{margin-bottom:0}
+.control-card{margin-top:16px}
+.slider-row{display:grid;grid-template-columns:150px 1fr 48px;gap:12px;align-items:center;margin:10px 0}
+.slider-row label{font-size:.9rem;font-weight:600;color:var(--muted)}
+.slider-row input{width:100%;accent-color:var(--accent)}
+.slider-row output{text-align:right;font-weight:700}
+.inline-note{font-size:.82rem;color:var(--muted);margin-top:10px}
+input[type="text"],input[type="number"],select{
+  width:100%;max-width:100%;padding:9px 10px;
+  border:1px solid var(--line);border-radius:8px;
+  background:var(--bg);color:var(--text);font-size:.9rem
+}
+input:focus,select:focus,button:focus-visible,a:focus-visible{
+  outline:2px solid var(--accent);outline-offset:2px
+}
+.search-box{margin-bottom:10px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.chip{
+  display:inline-flex;align-items:center;gap:7px;
+  border:1px solid var(--line);border-radius:999px;
+  padding:5px 11px;background:var(--bg);font-size:.85rem;cursor:pointer
+}
+.chip input{accent-color:var(--accent);margin:0}
+.form{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:10px;margin:14px 0}
+.form label{display:flex;flex-direction:column;gap:5px;font-size:.76rem;color:var(--muted)}
+.form-actions{display:flex;flex-wrap:wrap;gap:8px}
+.form-actions .button{margin:0}
+details summary{cursor:pointer}
+details summary:focus-visible{outline:2px solid var(--accent)}
+.table-card{overflow-x:auto}
+table{width:100%;min-width:680px;border-collapse:collapse}
+th,td{text-align:left;padding:10px 11px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:.76rem;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+tbody tr:hover{background:color-mix(in srgb,var(--panel) 70%,transparent)}
+.pill,.badge{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:3px 9px;background:var(--panel);font-size:.78rem}
+.score{font-weight:800}
+.chart{display:grid;gap:12px}
+.bar-row{display:grid;grid-template-columns:54px 1fr 42px;gap:12px;align-items:center}
+.bar-row b{font-size:.82rem;letter-spacing:.07em}
+.bar{height:14px;background:var(--panel);border:1px solid var(--line);border-radius:999px;overflow:hidden;display:flex}
+.bar i{display:block;height:100%}
+.bar i:nth-child(1){background:var(--chart1)}
+.bar i:nth-child(2){background:var(--chart2)}
+.bar i:nth-child(3){background:var(--chart3)}
+.bar-row em{text-align:right;font-style:normal;font-size:.86rem;font-weight:700}
+.company-card{margin-bottom:14px}
+.company-meta{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:10px}
+.company-card h3{font-size:1.25rem}
+.sources{padding-left:20px}
+.sources li{font-size:.9rem}
+.sources a{color:var(--accent);text-decoration:none}
+.sources a:hover{text-decoration:underline}
+.footer{padding-top:20px;color:var(--muted);font-size:.86rem}
+@media(max-width:800px){
+  .topbar-inner{flex-wrap:wrap}
+  .nav{order:3;width:100%;padding-bottom:2px}
+  .hero-grid{grid-template-columns:1fr}
+  .hero-copy{padding-top:12px}
+}
+@media(max-width:520px){
+  main{padding-left:14px;padding-right:14px}
+  .kpis{grid-template-columns:1fr}
+  .slider-row{grid-template-columns:112px 1fr 42px;gap:8px}
+  .bar-row{grid-template-columns:46px 1fr 34px;gap:8px}
+}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="#overview" aria-label="Runwise home"><span class="brand-mark"></span>RUNWISE</a>
+    <nav class="nav" aria-label="Main navigation">
+      <a href="#overview">Overview</a><a href="#lenses">Two lenses</a>
+      <a href="#method">Method</a><a href="#scores">Scores</a>
+      <a href="#companies">Companies</a><a href="#capex">Capex</a>
+      <a href="#limits">Limits</a><a href="#sources">Sources</a><a href="#about">About</a>
+    </nav>
+    <button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch color theme">Dark mode</button>
+  </div>
+</header>
+
+<main>
+<section id="overview" class="hero">
+  <div class="hero-grid">
+    <div class="hero-copy">
+      <div class="eyebrow">Biotech risk research</div>
+      <h1>Biotech risk, scored by how long a company can last.</h1>
+      <p class="lead">Runwise ranks biotech and life science tools stocks on three things: money in the bank, strength of the pipeline, and where the industry is heading. It is a student research project.</p>
+      <div class="notice"><strong>Data as of June 30, 2026</strong> filings (Q2 2026). Not investment advice. Stage, program count, team rating, and industry outlook are analyst judgments.</div>
+    </div>
+    <aside class="hero-card">
+      <div class="eyebrow">At a glance</div>
+      <div class="kpis">
+        <div class="kpi"><div class="kpi-label">Companies</div><div class="kpi-value">4+</div><div class="kpi-sub">Four built in, plus companies you add</div></div>
+        <div class="kpi"><div class="kpi-label">Pillars</div><div class="kpi-value">3</div><div class="kpi-sub">Finance, pipeline, industry</div></div>
+        <div class="kpi"><div class="kpi-label">Question</div><div class="kpi-value">Can it last?</div><div class="kpi-sub">Cash, capex, milestones</div></div>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<section id="lenses">
+  <div class="section-head"><div class="eyebrow">Section 1</div><h2>Two ways to judge a biotech</h2><p class="muted">Clinics and investors look at the same company with different goals. Runwise tries to respect both.</p></div>
+  <div class="grid">
+    <article class="card"><h3>What research clinics look for</h3><p class="muted">They ask if a study can be run safely and finished.</p><ul>
+      <li>Safety proof from lab and animal work before humans are dosed</li><li>Clear, measurable endpoints like tumor size or a biomarker</li>
+      <li>Simple trial rules and patients who can actually be enrolled</li><li>A sponsor with enough cash to pay sites and survive delays</li>
+      <li>Regulatory basics in place, such as an IND and IRB approval</li>
+    </ul></article>
+    <article class="card"><h3>What investors look for</h3><p class="muted">They ask if the company can earn a return.</p><ul>
+      <li>The science and how the drug works at a molecular level</li><li>Data quality: sample size and statistical significance</li>
+      <li>Pipeline depth, so one failure does not sink the company</li><li>Market size and unmet medical need</li>
+      <li>Cash runway and burn rate before more dilution</li><li>Patent protection and exclusivity</li>
+      <li>Risk adjusted value (rNPV), which weighs future cash by odds of success</li>
+    </ul></article>
+  </div>
+  <article class="card" style="margin-top:16px"><h3>Where they overlap</h3><p>Both sides care about <strong>cash runway</strong> and <strong>pipeline depth</strong>. A clinic does not want a sponsor that runs dry mid trial. An investor does not want to be diluted. That overlap is why those two ideas carry most of the weight in this model.</p></article>
+</section>
+
+<section id="method">
+  <div class="section-head"><div class="eyebrow">Section 2</div><h2>Methodology</h2><p class="muted">Each pillar is scored 0 to 100. The final score is a weighted average. Higher means lower risk.</p></div>
+  <div class="grid">
+    <article class="card"><h3>Financial health</h3><p class="muted"><code>runway = cash / (quarterly burn / 3)</code><br>Score = runway divided by 36 months, capped at 100. Burn uses operating cash use where found. Beam uses net loss as a proxy.</p></article>
+    <article class="card"><h3>Pipeline and product maturity</h3><p class="muted">Stage 1 to 5 (50%), number of programs (20%), platform and team rating (30%).</p></article>
+    <article class="card"><h3>Industry outlook</h3><p class="muted">A 1 to 10 judgment of demand and funding trends for the company's market, times 10.</p></article>
+  </div>
+  <div class="card control-card">
+    <div class="slider-row"><label for="wf">Financial health</label><input type="range" id="wf" min="0" max="100" value="40"><output id="vf">40%</output></div>
+    <div class="slider-row"><label for="wp">Pipeline</label><input type="range" id="wp" min="0" max="100" value="40"><output id="vp">40%</output></div>
+    <div class="slider-row"><label for="wi">Industry</label><input type="range" id="wi" min="0" max="100" value="20"><output id="vi">20%</output></div>
+    <p class="inline-note">Weights rescale to 100% and the ranking updates.</p>
+  </div>
+</section>
+
+<section id="scores">
+  <div class="section-head"><div class="eyebrow">Section 3</div><h2>Scoreboard</h2><p class="muted">Scores compare the selected companies to each other. They are not absolute grades.</p></div>
+  <div class="card">
+    <h3>Pick companies to compare</h3>
+    <label class="muted" for="q">Search built-in and added companies</label>
+    <input class="search-box" type="search" id="q" placeholder="Search a ticker or company name">
+    <div id="chips" class="chips" aria-label="Select companies to compare"></div>
+    <details>
+      <summary><strong>Add any company</strong></summary>
+      <p class="muted" style="margin-top:10px;font-size:.88rem">Enter figures from the company's latest filing, in $ millions. Burn is operating cash used per quarter. Type a ticker and press Look up to fill the name, cash, and burn from the latest SEC filing. Then set the four judgment fields yourself. Added companies are saved in this browser only.</p>
+      <div class="form">
+        <label>Name<input type="text" id="an" autocomplete="off"></label>
+        <label>Ticker<input type="text" id="at" maxlength="10" autocomplete="off"></label>
+        <label>Cash and investments ($M)<input type="number" id="ac" min="0" step="any"></label>
+        <label>Quarterly burn ($M)<input type="number" id="ab" min="0.01" step="any"></label>
+        <label>Lead stage<select id="as"><option value="1">1 — Early research</option><option value="2">2 — Phase 1 or early access</option><option value="3" selected>3 — Phase 2 or launch prep</option><option value="4">4 — Phase 3 or pivotal</option><option value="5">5 — Approved or selling</option></select></label>
+        <label>Number of programs<input type="number" id="ap" min="0" step="1"></label>
+        <label>Team and platform rating (1–10)<input type="number" id="ar" min="1" max="10" step="1"></label>
+        <label>Industry outlook (1–10)<input type="number" id="ao" min="1" max="10" step="1"></label>
+      </div>
+      <div class="form-actions">
+        <button class="button" id="lookup" type="button">Look up live data</button>
+        <button class="button primary" id="add" type="button">Add and compare</button>
+        <button class="button" id="clr" type="button">Remove added companies</button>
+      </div>
+      <p id="live" class="inline-note" role="status" aria-live="polite"></p>
+      <p id="err" class="muted" role="status" aria-live="polite" style="margin-top:10px"></p>
+    </details>
+  </div>
+  <div class="card table-card" style="margin-top:16px"><table id="tbl"></table></div>
+  <div class="card chart" id="chart" style="margin-top:16px" aria-label="Score contribution chart"></div>
+  <p class="muted" style="font-size:.83rem;margin-top:8px">Dark to light segments: financial, pipeline, industry. Each shows its weighted contribution.</p>
+</section>
+
+<section id="companies">
+  <div class="section-head"><div class="eyebrow">Section 4</div><h2>Company deep dives</h2><p class="muted">Runway estimates use the same cash and burn inputs as the scoreboard.</p></div>
+  <div id="deep"></div>
+</section>
+
+<section id="capex">
+  <div class="section-head"><div class="eyebrow">Section 5</div><h2>The capex lens</h2><p>Capex is money spent on equipment and buildings. For a biotech it shows how much cash goes into physical capacity instead of research. Heavy capex can shorten runway fast. Low capex can mean a lean lab or a company that outsources.</p></div>
+  <div class="card table-card"><table>
+    <thead><tr><th>Company</th><th>Capex found</th><th>What it suggests</th></tr></thead>
+    <tbody>
+      <tr><td>Nautilus (NAUT)</td><td>About $1.3M in FY2025. Gross property and equipment rose about $1.1M in H1 2026 (from $11.6M to $12.7M).</td><td>Very light. Under 3% of yearly cash use. The cash goes to R&amp;D, not buildings.</td></tr>
+      <tr><td>Quantum-Si (QSI)</td><td>$0.3M in Q1 2026.</td><td>Light, but it plans inventory investments ahead of the Proteus launch.</td></tr>
+      <tr><td>Recursion (RXRX)</td><td>Not included.</td><td>Capex was not part of the figures reviewed for this company.</td></tr>
+      <tr><td>Beam (BEAM)</td><td>Not included.</td><td>Beam says it is building internal manufacturing, so capex is a key number to watch.</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="limits">
+  <div class="section-head"><div class="eyebrow">Section 6</div><h2>Limits</h2></div>
+  <div class="card"><ul>
+    <li>Runway ignores new fundraising, partner payments, and dilution.</li>
+    <li>Stage, program count, platform rating, and industry outlook are judgment calls, not reported facts.</li>
+    <li>Two of the four built-in companies sell tools, not drugs, so stage means launch readiness for them.</li>
+    <li>Four companies are built in. Live lookup fills cash and burn from SEC filings, and the four judgment ratings are always entered by hand.</li>
+    <li>Built in figures reflect Q2 2026 filings. Live lookup uses each company's latest filing on record, and prices are delayed.</li>
+  </ul></div>
+</section>
+
+<section id="sources">
+  <div class="section-head"><div class="eyebrow">Section 7</div><h2>Sources</h2></div>
+  <ul class="sources">
+    <li>Nautilus: <a href="https://www.globenewswire.com/news-release/2026/07/28/3334216/0/en/Nautilus-Biotechnology-Reports-Second-Quarter-2026-Financial-Results.html">Q2 2026 press release</a> and <a href="https://www.sec.gov/Archives/edgar/data/0001808805/000180880526000034/naut-20260630.htm">10-Q</a></li>
+    <li>Quantum-Si: <a href="https://www.globenewswire.com/news-release/2026/08/13/3344917/0/en/quantum-si-reports-second-quarter-2026-financial-results-and-provides-proteus-development-update.html">Q2 2026 press release</a> and <a href="https://www.sec.gov/Archives/edgar/data/0001816431/000181643126000056/qsi-20260630.htm">10-Q</a></li>
+    <li>Recursion: <a href="https://www.sec.gov/Archives/edgar/data/0001601830/000160183026000097/exhibit991-q0226.htm">Q2 2026 8-K exhibit</a></li>
+    <li>Beam: <a href="https://www.sec.gov/Archives/edgar/data/0001745999/000119312526331522/beam-ex99_1.htm">Q2 2026 8-K exhibit</a></li>
+  </ul>
+</section>
+
+<section id="about">
+  <div class="section-head"><div class="eyebrow">Section 8</div><h2>About</h2></div>
+  <div class="card"><p><strong>Alsadig Bashir</strong><br><span class="muted">Purdue University</span></p><p style="margin:0"><a href="https://x.com/alsabbbb">X</a> &nbsp;&nbsp; <a href="https://substack.com/@alsab">Substack</a></p></div>
+</section>
+
+<footer class="footer">Runwise is a student research project, not investment advice.</footer>
+</main>
+
+<script>
+const builtIn = [
+  {n:"Nautilus Biotechnology",t:"NAUT",cash:129.2,burn:13.4,stage:2,prog:3,cap:6,out:6,
+   cash_note:"$129.2M cash and investments at June 30, 2026. H1 operating cash use was $26.8M.",
+   what:"Single molecule proteome platform (Voyager). First revenue in Q2 2026 ($0.2M), mostly grant and early access service income.",
+   cat:"Voyager pre orders early 2027, shipments from mid 2027. AKT1 assay enters early access late 2026.",
+   risk:"Broadscale assay missed its 2027 target, so the roadmap shifted to proteoforms. Platform not yet on the market.",
+   outlook:"Demand for proteomics depends on pharma and research funding. Proteoforms are a new, unproven niche."},
+  {n:"Quantum-Si",t:"QSI",cash:169.9,burn:22.0,stage:3,prog:2,cap:6,out:6,
+   cash_note:"$169.9M cash and investments at June 30, 2026. H1 operating cash use was $44.1M. Company says runway reaches Q4 2028.",
+   what:"Protein sequencing tools. Q2 revenue was only $0.3M as customers wait for the Proteus system.",
+   cat:"Proteus launch moved to Q2 2027. Workforce cut by about 20% to save roughly $12M a year.",
+   risk:"Launch delays and tiny revenue. Net loss was $23.5M in Q2.",
+   outlook:"Same tools market as Nautilus, with a claimed $4B non human proteomics opportunity."},
+  {n:"Recursion Pharmaceuticals",t:"RXRX",cash:556.8,burn:105.9,stage:3,prog:5,cap:6,out:7,
+   cash_note:"$556.8M cash at June 30, 2026, down from $753.9M at year end. Runway guided into early 2028.",
+   what:"AI driven drug discovery with partners like Genentech. Several early and mid stage programs, including REC-4881 in phase 2.",
+   cat:"REC-4881 data due in November and a registrational path update in H2 2026. REC-7735 trial start in H2 2026.",
+   risk:"Fastest cash burn of the group. Revenue fell 60% in Q2 and no program is late stage yet.",
+   outlook:"Strong investor interest in AI for drug discovery, but proof still depends on clinical results."},
+  {n:"Beam Therapeutics",t:"BEAM",cash:1200,burn:122.7,stage:4,prog:4,cap:8,out:8,
+   cash_note:"$1.2B cash and securities at June 30, 2026. Burn uses Q2 net loss of $122.7M as a proxy. Company guides runway into mid 2029.",
+   what:"Base editing gene medicines. Risto-cel for sickle cell and BEAM-302 for alpha 1 antitrypsin deficiency are the lead programs.",
+   cat:"BLA submission for risto-cel as early as year end 2026. First patient dosed in the BEAM-302 pivotal cohort in July.",
+   risk:"Costs will rise with launch prep. Collaboration revenue dropped sharply in Q2.",
+   outlook:"Gene editing is moving from research to approvals, which supports the field."}
+];
+
+const $ = id => document.getElementById(id);
+const clamp = x => Math.max(0, Math.min(1, x));
+const escapeHTML = value => String(value).replace(/[&<>"']/g, ch => ({
+  "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+}[ch]));
+
+let data = [...builtIn];
+let selected = new Set(builtIn.map(company => company.ticker || company.t));
+let query = "";
+
+function validCustom(company) {
+  return company && typeof company.n === "string" &&
+    typeof company.t === "string" && /^[A-Z0-9.-]{1,10}$/.test(company.t) &&
+    Number.isFinite(company.cash) && company.cash >= 0 &&
+    Number.isFinite(company.burn) && company.burn > 0 &&
+    Number.isFinite(company.stage) && company.stage >= 1 && company.stage <= 5 &&
+    Number.isFinite(company.prog) && company.prog >= 0 &&
+    Number.isFinite(company.cap) && company.cap >= 1 && company.cap <= 10 &&
+    Number.isFinite(company.out) && company.out >= 1 && company.out <= 10;
+}
+function ticker(company) { return company.t || company.ticker; }
+function score(company) {
+  const runway = company.cash / (company.burn / 3);
+  return {
+    runway,
+    f: clamp(runway / 36) * 100,
+    p: company.stage / 5 * 50 + clamp(company.prog / 6) * 20 + Math.min(company.cap, 10) / 10 * 30,
+    i: Math.min(company.out, 10) * 10
+  };
+}
+function getWeights() {
+  const values = ["wf","wp","wi"].map(id => Number($(id).value));
+  const sum = values.reduce((a,b) => a+b, 0) || 1;
+  return values.map(value => value / sum);
+}
+function renderScoreboard() {
+  const weights = getWeights();
+  $("vf").textContent = Math.round(weights[0] * 100) + "%";
+  $("vp").textContent = Math.round(weights[1] * 100) + "%";
+  $("vi").textContent = Math.round(weights[2] * 100) + "%";
+
+  const ranked = data.filter(company => selected.has(ticker(company))).map(company => {
+    const s = score(company);
+    return {...company,...s,
+      a:s.f*weights[0],b:s.p*weights[1],c:s.i*weights[2],
+      total:s.f*weights[0]+s.p*weights[1]+s.i*weights[2]};
+  }).sort((a,b) => b.total-a.total);
+
+  if (!ranked.length) {
+    $("tbl").innerHTML = "<tbody><tr><td>Select at least one company to show scores.</td></tr></tbody>";
+    $("chart").innerHTML = '<p class="muted">No companies selected.</p>';
+    return;
+  }
+  let rows = "<thead><tr><th>#</th><th>Company</th><th>Runway (mo)</th><th>Fin</th><th>Pipe</th><th>Ind</th><th>Score</th><th>Risk</th></tr></thead><tbody>";
+  ranked.forEach((company,index) => {
+    const risk = company.total >= 65 ? "Lower" : company.total >= 45 ? "Medium" : "Higher";
+    rows += `<tr><td>${index+1}</td><td>${escapeHTML(company.n)} (${escapeHTML(ticker(company))})</td>
+      <td>${company.runway.toFixed(0)}</td><td>${company.f.toFixed(0)}</td><td>${company.p.toFixed(0)}</td>
+      <td>${company.i.toFixed(0)}</td><td class="score">${company.total.toFixed(0)}</td><td><span class="pill">${risk}</span></td></tr>`;
+  });
+  $("tbl").innerHTML = rows + "</tbody>";
+  $("chart").innerHTML = ranked.map(company => `
+    <div class="bar-row">
+      <b>${escapeHTML(ticker(company))}</b>
+      <div class="bar" role="img" aria-label="${escapeHTML(ticker(company))} score ${company.total.toFixed(0)}">
+        <i style="width:${company.a}%"></i><i style="width:${company.b}%"></i><i style="width:${company.c}%"></i>
+      </div>
+      <em>${company.total.toFixed(0)}</em>
+    </div>`).join("");
+}
+function renderCompanies() {
+  $("deep").innerHTML = data.map(company => {
+    const s = score(company), t = ticker(company);
+    if (company.custom) {
+      return `<article class="card company-card">
+        <div class="company-meta"><span class="badge">${escapeHTML(t)}</span><span class="badge">Runway ${s.runway.toFixed(0)} mo</span><span class="badge">User added</span></div>
+        <h3>${escapeHTML(company.n)}</h3>
+        <p><strong>Runway estimate:</strong> ${s.runway.toFixed(0)} months, calculated from the cash and quarterly burn you entered.</p>
+        <p><strong>Entered model inputs:</strong> stage ${company.stage}/5, ${company.prog} programs, platform/team ${company.cap}/10, industry outlook ${company.out}/10.</p>
+        ${liveLine(company.live)}
+        <p class="muted">Custom company details are not included. Edit or remove this entry through the add-company controls.</p>
+      </article>`;
+    }
+    return `<article class="card company-card">
+      <div class="company-meta"><span class="badge">${escapeHTML(t)}</span><span class="badge">Runway ${s.runway.toFixed(0)} mo</span></div>
+      <h3>${escapeHTML(company.n)}</h3>
+      <p><strong>Runway estimate:</strong> ${s.runway.toFixed(0)} months. <span class="muted">${escapeHTML(company.cash_note)}</span></p>
+      <p><strong>What it does:</strong> ${escapeHTML(company.what)}</p>
+      <p><strong>Next catalysts:</strong> ${escapeHTML(company.cat)}</p>
+      <p><strong>Key risks:</strong> ${escapeHTML(company.risk)}</p>
+      <p><strong>Industry view:</strong> ${escapeHTML(company.outlook)}</p>
+    </article>`;
+  }).join("");
+}
+function renderChips() {
+  const matches = data.filter(company =>
+    (company.n + " " + ticker(company)).toLowerCase().includes(query)
+  );
+  $("chips").innerHTML = matches.length ? matches.map(company => {
+    const t = ticker(company);
+    return `<label class="chip"><input type="checkbox" data-ticker="${escapeHTML(t)}" ${selected.has(t) ? "checked" : ""}>${escapeHTML(t)} — ${escapeHTML(company.n)}</label>`;
+  }).join("") : '<span class="muted">No matches. You can add a company below.</span>';
+}
+function persistCustom() {
+  try {
+    localStorage.setItem("runwise-custom-companies", JSON.stringify(data.filter(c => c.custom)));
+    return true;
+  } catch (error) {
+    return false;
+  }
+}
+
+try {
+  const saved = JSON.parse(localStorage.getItem("runwise-custom-companies") || "[]");
+  if (Array.isArray(saved)) {
+    saved.filter(validCustom).forEach(company => {
+      const t = ticker(company);
+      if (!data.some(existing => ticker(existing) === t)) {
+        company.custom = true;
+        data.push(company);
+        selected.add(t);
+      }
+    });
+  }
+} catch (error) {
+  // Ignore missing, blocked, or invalid browser storage.
+}
+
+$("chips").addEventListener("change", event => {
+  const t = event.target.dataset.ticker;
+  if (!t) return;
+  event.target.checked ? selected.add(t) : selected.delete(t);
+  renderScoreboard();
+});
+$("q").addEventListener("input", event => {
+  query = event.target.value.toLowerCase().trim();
+  renderChips();
+});
+$("add").addEventListener("click", () => {
+  const tickerValue = $("at").value.trim().toUpperCase();
+  const company = {
+    n:$("an").value.trim() || tickerValue,
+    t:tickerValue,
+    cash:Number($("ac").value),
+    burn:Number($("ab").value),
+    stage:Number($("as").value),
+    prog:Number($("ap").value),
+    cap:Number($("ar").value),
+    out:Number($("ao").value),
+    custom:true
+  };
+  const error = $("err");
+  if (lastLive && lastLive.ticker === tickerValue) {
+    company.live = {price:lastLive.price, marketCap:lastLive.marketCap, capexQuarterly:lastLive.capexQuarterly, netLossQuarterly:lastLive.netLossQuarterly, asOf:lastLive.asOf};
+  }
+  if (!validCustom(company)) {
+    error.textContent = "Enter a valid ticker, cash, positive quarterly burn, program count, and ratings from 1 to 10.";
+    return;
+  }
+  if (builtIn.some(item => ticker(item) === tickerValue)) {
+    error.textContent = "That ticker is already included as a built-in company.";
+    return;
+  }
+  const oldIndex = data.findIndex(item => item.custom && ticker(item) === tickerValue);
+  if (oldIndex !== -1) data.splice(oldIndex, 1);
+  data.push(company);
+  selected.add(tickerValue);
+  const saved = persistCustom();
+  error.textContent = saved ? "Company added and saved in this browser." : "Company added for this session, but browser storage is unavailable.";
+  renderChips();
+  renderScoreboard();
+  renderCompanies();
+});
+let lastLive = null;
+const money = v => v == null ? "n/a" : "$" + Number(v).toLocaleString(undefined, {maximumFractionDigits:1}) + "M";
+function liveLine(l) {
+  if (!l) return "";
+  const parts = [];
+  if (l.price != null) parts.push("price $" + l.price);
+  if (l.marketCap != null) parts.push("market cap " + money(l.marketCap));
+  if (l.capexQuarterly != null) parts.push("capex about " + money(l.capexQuarterly) + " a quarter");
+  if (l.netLossQuarterly != null) parts.push("net loss about " + money(l.netLossQuarterly) + " a quarter");
+  if (!parts.length) return "";
+  return "<p><strong>SEC and market data:</strong> " + escapeHTML(parts.join("; ")) + (l.asOf ? " (period ended " + escapeHTML(l.asOf) + ")" : "") + ".</p>";
+}
+$("lookup").addEventListener("click", async () => {
+  const t = $("at").value.trim().toUpperCase();
+  const box = $("live"), btn = $("lookup");
+  if (!/^[A-Z0-9.-]{1,10}$/.test(t)) { box.textContent = "Type a ticker in the Ticker box first."; return; }
+  btn.disabled = true;
+  box.textContent = "Looking up " + t + "...";
+  try {
+    const res = await fetch("/.netlify/functions/lookup?ticker=" + encodeURIComponent(t));
+    const d = await res.json();
+    if (!res.ok) throw new Error(d.error || "Lookup failed.");
+    lastLive = d;
+    if (!$("an").value.trim()) $("an").value = d.name;
+    if (d.cash != null) $("ac").value = d.cash;
+    if (d.burnQuarterly != null) $("ab").value = d.burnQuarterly;
+    const bits = [
+      "Cash " + money(d.cash),
+      "quarterly burn " + money(d.burnQuarterly),
+      "quarterly capex " + money(d.capexQuarterly)
+    ];
+    if (d.price != null) bits.push("price $" + d.price);
+    if (d.marketCap != null) bits.push("market cap " + money(d.marketCap));
+    box.textContent = "Filled from SEC data (period ended " + (d.asOf || "unknown") + "): " + bits.join(", ") + ". " + (d.notes || []).join(" ") + " Now set the stage, programs, and the two ratings.";
+  } catch (e) {
+    box.textContent = (e instanceof SyntaxError || e instanceof TypeError)
+      ? "Live lookup only works on the Netlify version that includes the lookup function. You can still type the numbers in."
+      : e.message;
+  } finally {
+    btn.disabled = false;
+  }
+});
+$("clr").addEventListener("click", () => {
+  data = data.filter(company => !company.custom);
+  selected = new Set([...selected].filter(t => builtIn.some(company => ticker(company) === t)));
+  persistCustom();
+  $("err").textContent = "Added companies removed.";
+  renderChips();
+  renderScoreboard();
+  renderCompanies();
+});
+["wf","wp","wi"].forEach(id => $(id).addEventListener("input", renderScoreboard));
+renderChips();
+renderScoreboard();
+renderCompanies();
+
+const themeButton = $("themeToggle");
+const root = document.documentElement;
+try {
+  const savedTheme = localStorage.getItem("runwise-theme");
+  if (savedTheme === "light" || savedTheme === "dark") root.dataset.theme = savedTheme;
+} catch (error) {}
+function updateThemeButton() {
+  const isDark = root.dataset.theme
+    ? root.dataset.theme === "dark"
+    : window.matchMedia("(prefers-color-scheme: dark)").matches;
+  themeButton.textContent = isDark ? "Light mode" : "Dark mode";
+  themeButton.setAttribute("aria-label", isDark ? "Switch to light mode" : "Switch to dark mode");
+}
+themeButton.addEventListener("click", () => {
+  const isDark = root.dataset.theme
+    ? root.dataset.theme === "dark"
+    : window.matchMedia("(prefers-color-scheme: dark)").matches;
+  const next = isDark ? "light" : "dark";
+  root.dataset.theme = next;
+  try { localStorage.setItem("runwise-theme", next); } catch (error) {}
+  updateThemeButton();
+});
+updateThemeButton();
+</script>
+</body>
+</html>
