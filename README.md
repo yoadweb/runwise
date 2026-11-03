@@ -2,7 +2,7 @@
 
 Runwise is an interactive biotech risk screener. It ranks biotech stocks by how likely they are to last, using cash runway, pipeline strength, and industry outlook.
 
-Live site: [add your link here]
+Live site: https://runwiseequities.netlify.app/ 
 
 ## Why it exists
 
